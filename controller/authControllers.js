@@ -1,5 +1,5 @@
 const db = require("../models/db");
-const jwt = require("../utils/jwt");
+const jwt = require("../util/jwt");
 const { v4: uuidv4 } = require("uuid");
 
 exports.appleLogin = (req, res) => {
