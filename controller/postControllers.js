@@ -18,15 +18,26 @@ exports.getAllPosts = (req, res) => {
 
 // 게시글 생성
 exports.createPost = (req, res) => {
-  const { user_id, title, content } = req.body;
+  const user_id = req.user.user_id; // 여기서 user_id 가져오기
+  const { title, content } = req.body;
+
+  if (!title || !content) {
+    return res
+      .status(400)
+      .json({ success: false, error: "제목과 내용은 필수입니다." });
+  }
+
   const post_id = uuidv4();
   const query =
     "INSERT INTO Posts (post_id, user_id, title, content, created_at) VALUES (?, ?, ?, ?, NOW())";
+
   db.query(query, [post_id, user_id, title, content], (err) => {
-    if (err)
+    if (err) {
+      console.error("게시글 생성 오류:", err);
       return res
         .status(500)
         .json({ success: false, error: "게시글 생성 실패" });
+    }
 
     res.status(201).json({
       success: true,
