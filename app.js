@@ -8,7 +8,7 @@ const swaggerSpec = require("./docs/swagger");
 
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
+app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
