@@ -4,7 +4,9 @@ const db = require("../models/db");
 // 게시글 전체 조회
 exports.getAllPosts = (req, res) => {
   const query = `
-    SELECT post_id, user_id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at FROM Posts ORDER BY created_at DESC`;
+    SELECT post_id, user_id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at 
+    FROM Posts 
+    ORDER BY id DESC`; // id로 정렬: 최신 게시글이 위로
 
   db.query(query, (err, results) => {
     if (err)
@@ -54,7 +56,9 @@ exports.createPost = (req, res) => {
 exports.getPostById = (req, res) => {
   const { id } = req.params;
   const query = `
-    SELECT post_id, user_id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at FROM Posts WHERE post_id = ?`;
+    SELECT post_id, user_id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at 
+    FROM Posts 
+    WHERE post_id = ?`;
 
   db.query(query, [id], (err, results) => {
     if (err)
