@@ -6,7 +6,7 @@ exports.getAllPosts = (req, res) => {
   const query = `
     SELECT post_id, user_id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at 
     FROM Posts 
-    ORDER BY id ASC`; // id로 정렬: 최신 게시글이 위로
+    ORDER BY id DESC`;
 
   db.query(query, (err, results) => {
     if (err)
