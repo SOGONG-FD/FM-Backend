@@ -3,7 +3,9 @@ const db = require("../models/db");
 
 // 게시글 전체 조회
 exports.getAllPosts = (req, res) => {
-  const query = "SELECT * FROM Posts ORDER BY created_at DESC";
+  const query = `
+    SELECT post_id, user_id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at FROM Posts ORDER BY created_at DESC`;
+
   db.query(query, (err, results) => {
     if (err)
       return res.status(500).json({ success: false, error: "DB 조회 실패" });
@@ -18,7 +20,7 @@ exports.getAllPosts = (req, res) => {
 
 // 게시글 생성
 exports.createPost = (req, res) => {
-  const user_id = req.user.user_id; // 여기서 user_id 가져오기
+  const user_id = req.user.user_id;
   const { title, content } = req.body;
 
   if (!title || !content) {
@@ -28,8 +30,9 @@ exports.createPost = (req, res) => {
   }
 
   const post_id = uuidv4();
-  const query =
-    "INSERT INTO Posts (post_id, user_id, title, content, created_at) VALUES (?, ?, ?, ?, NOW())";
+  const query = `
+    INSERT INTO Posts (post_id, user_id, title, content, created_at)
+    VALUES (?, ?, ?, ?, NOW())`;
 
   db.query(query, [post_id, user_id, title, content], (err) => {
     if (err) {
@@ -50,7 +53,9 @@ exports.createPost = (req, res) => {
 // 게시글 단일 조회
 exports.getPostById = (req, res) => {
   const { id } = req.params;
-  const query = "SELECT * FROM Posts WHERE post_id = ?";
+  const query = `
+    SELECT post_id, user_id, title, content, DATE_FORMAT(created_at, '%Y-%m-%d') AS created_at FROM Posts WHERE post_id = ?`;
+
   db.query(query, [id], (err, results) => {
     if (err)
       return res.status(500).json({ success: false, error: "DB 조회 실패" });
@@ -68,7 +73,6 @@ exports.getPostById = (req, res) => {
 exports.deletePost = (req, res) => {
   const { id } = req.params;
 
-  // 삭제할 게시글이 있는지 먼저 확인
   const checkQuery = "SELECT * FROM Posts WHERE post_id = ?";
   db.query(checkQuery, [id], (err, results) => {
     if (err)
@@ -78,7 +82,6 @@ exports.deletePost = (req, res) => {
         .status(404)
         .json({ success: false, error: "삭제할 게시글 없음" });
 
-    // 실제 삭제 실행
     const deleteQuery = "DELETE FROM Posts WHERE post_id = ?";
     db.query(deleteQuery, [id], (delErr) => {
       if (delErr)
